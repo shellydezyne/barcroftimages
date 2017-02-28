@@ -1,5 +1,7 @@
 package com.example.android.barcroftimages;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -10,7 +12,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private GridView gridView;
     private GridViewAdapter gridAdapter;
     private RelativeLayout mRelativeLayout;
-    private PopupWindow mPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +55,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setAdapter();
 
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-
-                Intent intent = new Intent(MainActivity.this,detailActivity.class);
-                startActivity(intent);
-
-
-            }
-        });
     }
 
 
@@ -71,9 +64,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+//        searchView.setSearchableInfo( searchManager.getSearchableInfo(getComponentName()) );
+
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.search:
+                onSearchRequested();
+
+            case R.id.cart_view:
+                Intent intent = new Intent(MainActivity.this,Cart_View.class);
+                startActivity(intent);
+        }
+
+        return true;
+    }
+
+
+    @Override
+    public boolean onSearchRequested() {
+        Bundle appData = new Bundle();
+        appData.putString("hello", "world");
+        startSearch(null, false, appData, false);
+        return true;
+    }
 
     @Override
     public void onBackPressed() {
