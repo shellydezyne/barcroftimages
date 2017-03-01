@@ -25,7 +25,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 
 
+import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener  {
@@ -53,6 +57,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getIds();
 
         setAdapter();
+
+        DatabaseHandler db = new DatabaseHandler(this);
+
+        // get image from drawable
+        Bitmap image = BitmapFactory.decodeResource(getResources(),
+                R.drawable.image_1);
+
+// convert bitmap to byte
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte imageInByte[] = stream.toByteArray();
+
+        Calendar c = Calendar.getInstance();
+        System.out.println("Current time => " + c.getTime());
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:MM:SS");
+        String formattedDate = df.format(c.getTime());
+
+
+
+        Log.d("Insert: ", "Inserting ..");
+        db.addEntry(new DB_model_class(1,imageInByte,formattedDate,2));
+
+
+        List<DB_model_class> contacts = db.getAllContacts();
+        for (DB_model_class cn : contacts) {
+            String log = "ID:" + cn.getId() + " Image: " + cn.getImage()
+                    + " ,date: " + cn.getDate()+ " ,series:" + cn.getSeries();
+
+// Writing Contacts to log
+            Log.d("Result: ", log);
+//add contacts data in arrayList
+
+
+        }
 
 
 
